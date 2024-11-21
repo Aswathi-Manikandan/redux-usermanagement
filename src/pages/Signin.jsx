@@ -1,14 +1,21 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { signInFailure, signInStart, signInSuccess } from '../redux/user/userSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import OAuth from '../components/OAuth';
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { signInFailure, signInStart, signInSuccess } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 
 const SignIn = () => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const { loading, error } = useSelector((state) => state.user);
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const { currentUser, loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  // Redirect if the user is already signed in
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/", { replace: true }); // Prevent back navigation
+    }
+  }, [currentUser, navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -18,17 +25,17 @@ const SignIn = () => {
     e.preventDefault();
     try {
       dispatch(signInStart());
-      const res = await fetch('/api/auth/signin', {
-        method: 'POST',
+      const res = await fetch("/api/auth/signin", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
 
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.message || 'Failed to sign in. Please try again.');
+        throw new Error(errorData.message || "Failed to sign in. Please try again.");
       }
 
       const data = await res.json();
@@ -37,10 +44,10 @@ const SignIn = () => {
       dispatch(signInSuccess(data));
 
       // Navigate to the home page after successful sign-in
-      navigate('/');
+      navigate("/");
     } catch (err) {
       console.log(err.message);
-      dispatch(signInFailure(err.message || 'Something went wrong!'));
+      dispatch(signInFailure(err.message || "Something went wrong!"));
     }
   };
 
@@ -65,15 +72,15 @@ const SignIn = () => {
         <button
           disabled={loading}
           className={`bg-slate-600 text-white p-3 rounded-lg uppercase ${
-            loading ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-95'
+            loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-95"
           }`}
         >
-          {loading ? 'Loading...' : 'Sign In'}
+          {loading ? "Loading..." : "Sign In"}
         </button>
-        <OAuth/>
+        <OAuth />
       </form>
       <div className="flex gap-2 mt-5">
-        <p>Dont have an Account?</p>
+        <p>Dont have an account?</p>
         <Link to="/sign-up">
           <span className="text-blue-500">Sign Up</span>
         </Link>
@@ -83,4 +90,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn; 
+export default SignIn;

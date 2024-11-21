@@ -1,13 +1,17 @@
-// App.jsx
-import React from 'react';
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import React from "react";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Signin from "./pages/Signin";
 import SignUp from "./pages/SignUp";
 import Profile from "./pages/Profile";
 import Header from "./components/Header";
-import PrivateRoute from "./components/PrivateRoute";
+
+const PrivateRoute = ({ children }) => {
+  const { currentUser } = useSelector((state) => state.user);
+  return currentUser ? children : <Navigate to="/sign-in" />;
+};
 
 const App = () => {
   return (
@@ -20,10 +24,15 @@ const App = () => {
         <Route path="/sign-in" element={<Signin />} />
         <Route path="/sign-up" element={<SignUp />} />
 
-        {/* Protected Route using PrivateRoute */}
-        <Route element={<PrivateRoute />}>
-          <Route path="/profile" element={<Profile />} />
-        </Route>
+        {/* Protected Routes */}
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

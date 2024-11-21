@@ -11,7 +11,7 @@ const Header = () => {
           <h1 className="font-bold text-white">User Management</h1>
         </Link>
 
-        <ul className="flex gap-4 text-white">
+        <ul className="flex gap-4 text-white items-center">
           {/* Navigation Links */}
           <Link to="/">
             <li>Home</li>
@@ -22,8 +22,8 @@ const Header = () => {
           </Link>
 
           {/* Profile or Sign-In */}
-          <Link to="/profile">
-            {currentUser ? (
+          {currentUser ? (
+            <Link to="/profile">
               <img
                 src={currentUser.profilePicture}
                 alt="Profile"
@@ -33,10 +33,12 @@ const Header = () => {
                     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png")
                 } // Fallback to default
               />
-            ) : (
+            </Link>
+          ) : (
+            <Link to="/sign-in">
               <li>Sign In</li>
-            )}
-          </Link>
+            </Link>
+          )}
         </ul>
       </div>
     </div>
