@@ -1,19 +1,18 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import OAuth from '../components/OAuth';
+import React, { useState } from 'react';
+import OAuth from "../components/OAuth"; // Assuming OAuth component handles Google Auth
 
 const SignUp = () => {
-  const [formData, setFormData] = useState({});
-  const [error,setError] = useState(null)
-  const [loading,setLoading] = useState(false)
-  const navigate = useNavigate()
+  const[formData,setFormData] = useState({})
+  const[error,setError] = useState(null);
+  const[loading,setLoading] = useState(false)
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
-  };
+  const handleChange =(e)=>{
+      setFormData({...formData,[e.target.id] : e.target.value})
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
     try {
       setLoading(true)
       const res = await fetch('/api/auth/signup', {
@@ -21,66 +20,124 @@ const SignUp = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formData), // Send the form data as JSON
       });
-
+  
       if (!res.ok) {
-        throw new Error('Failed to sign up. Please try again.');
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Error occurred during sign up');
       }
-
+  
       const data = await res.json();
-      console.log(data);
-      
+      console.log('Sign-up successful:', data);
+
       setLoading(false)
-      setError(false)
-     
-      navigate('/');
-    } catch (error) {
-      console.log(error);
-      
+      // setError(false)
+    } catch (err) {
       setLoading(false)
       setError(true)
+      console.error('Error:', err.message);
     }
   };
-
+   
+  
   return (
-    <div className="p-3 max-w-lg mx-auto">
-      <h1 className="text-3xl text-center font-semibold m-7">Sign Up</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input
-          type="text"
-          placeholder="Username"
-          id="username"
-          className="bg-slate-200 p-3 rounded-lg"
-          onChange={handleChange}
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          id="email"
-          className="bg-slate-200 p-3 rounded-lg"
-          onChange={handleChange}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          id="password"
-          className="bg-slate-200 p-3 rounded-lg"
-          onChange={handleChange}
-        />
-        <button disabled={loading} className="bg-slate-600 text-white p-3 rounded-lg uppercase hover:opacity-95">
-          {loading? 'Loading....': 'Sign Up'}
-        </button>
-        <OAuth/>
-      </form>
-      <div className="flex gap-2 mt-5">
-        <p>Have an Account?</p>
-        <Link to="/sign-in">
-          <span className="text-blue-500">Sign In</span>
-        </Link>
+    <div className="min-h-screen flex items-center justify-center bg-gray-500 text-white">
+      <div className="flex shadow-lg rounded-lg bg-white overflow-hidden w-full max-w-4xl">
+      
+        <div
+          className="hidden md:flex flex-col justify-center items-center w-1/2 text-white p-6"
+          style={{ backgroundImage: 'url(https://i.pinimg.com/736x/96/1e/20/961e20478c56469885db826f1c335fff.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
+        >
+          <h1 className="text-3xl font-bold">Join Us!</h1>
+          <p className="mt-2 text-sm">Sign up to create an account and get started.</p>
+          <a
+            href="/sign-in"
+            className="mt-6 px-6 py-2 bg-black text-white font-medium rounded-md shadow-md hover:bg-gray-700"
+          >
+            Log In
+          </a>
+        </div>
+
+        {/* Right Section */}
+        <div className="flex flex-col justify-center p-8 w-full md:w-1/2 bg-gray-100 text-gray-900">
+          <h1 className="text-2xl font-bold text-center mb-4">Sign Up</h1>
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Username Input */}
+            <div>
+              <label htmlFor="username" className="block text-sm font-medium">
+                Username
+              </label>
+              <input
+                type="text"
+                placeholder="Enter username"
+                id="username"
+                className="w-full p-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-gray-500 focus:outline-none"
+              onChange={handleChange}
+              />
+            </div>
+
+            {/* Email Input */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium">
+                Email
+              </label>
+              <input
+                type="email"
+                placeholder="Enter email"
+                id="email"
+                className="w-full p-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-gray-500 focus:outline-none"
+              onChange={handleChange}
+              />
+            </div>
+
+            {/* Password Input */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium">
+                Password
+              </label>
+              <input
+                type="password"
+                placeholder="Enter password"
+                id="password"
+                className="w-full p-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-gray-500 focus:outline-none"
+              onChange={handleChange}
+              />
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="w-full bg-black
+               text-white py-2 rounded-md font-medium
+                hover:bg-gray-700 transition"
+            >
+               {loading ?'Loading....':'Create Account'}
+             
+            </button>
+          </form>
+
+          {/* OAuth Google Sign Up */}
+          <div className="mt-4">
+            <OAuth />
+          </div>
+
+          {/* Footer */}
+          <p className="text-center text-sm mt-4">
+            Already have an account?{' '}
+            <a href="/sign-in" className="text-gray-900 font-medium hover:underline">
+              Log In
+            </a>
+          </p>
+          <p 
+  className={`mt-5 text-center p-3 rounded-lg ${error ? 'bg-red-100 text-red-700 border border-red-500' : ''}`}>
+    {error && 'Something went wrong. Please try again.'}</p>
+        </div>
+        
       </div>
-      <p className='text-red-800 mt-5'>{error && 'Something went wrong!!'}</p>
-    </div>
+     
+</div>
   );
 };
 

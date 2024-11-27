@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { signInFailure, signInStart, signInSuccess } from "../redux/user/userSlice";
-import OAuth from "../components/OAuth";
+import OAuth from "../components/OAuth"; // Assuming OAuth component handles Google Auth
 
 const SignIn = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -52,40 +52,82 @@ const SignIn = () => {
   };
 
   return (
-    <div className="p-3 max-w-lg mx-auto">
-      <h1 className="text-3xl text-center font-semibold m-7">Sign In</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input
-          type="email"
-          placeholder="Email"
-          id="email"
-          className="bg-slate-200 p-3 rounded-lg"
-          onChange={handleChange}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          id="password"
-          className="bg-slate-200 p-3 rounded-lg"
-          onChange={handleChange}
-        />
-        <button
-          disabled={loading}
-          className={`bg-slate-600 text-white p-3 rounded-lg uppercase ${
-            loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-95"
-          }`}
+    <div className="min-h-screen flex items-center justify-center bg-gray-500 text-white">
+      <div className="flex shadow-lg rounded-lg bg-white overflow-hidden w-full max-w-4xl">
+        {/* Left Section with Background Image */}
+        <div
+          className="hidden md:flex flex-col justify-center items-center w-1/2 text-white p-6"
+          style={{ backgroundImage: 'url(https://i.pinimg.com/736x/f2/44/38/f2443851bb24757bbe9025bfc1faf154.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
         >
-          {loading ? "Loading..." : "Sign In"}
-        </button>
-        <OAuth />
-      </form>
-      <div className="flex gap-2 mt-5">
-        <p>Dont have an account?</p>
-        <Link to="/sign-up">
-          <span className="text-blue-500">Sign Up</span>
-        </Link>
+          <h1 className="text-3xl font-bold">Welcome Back!</h1>
+          <p className="mt-2 text-sm">Sign in to access your account and continue your journey.</p>
+          <a
+            href="/sign-up"
+            className="mt-6 px-6 py-2 bg-black text-white font-medium rounded-md shadow-md hover:bg-gray-700"
+          >
+            Sign Up
+          </a>
+        </div>
+
+        {/* Right Section */}
+        <div className="flex flex-col justify-center p-8 w-full md:w-1/2 bg-gray-100 text-gray-900">
+          <h1 className="text-2xl font-bold text-center mb-4">Sign In</h1>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Email Input */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium">
+                Email
+              </label>
+              <input
+                type="email"
+                placeholder="Enter email"
+                id="email"
+                className="w-full p-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-gray-500 focus:outline-none"
+                onChange={handleChange}
+              />
+            </div>
+
+            {/* Password Input */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium">
+                Password
+              </label>
+              <input
+                type="password"
+                placeholder="Enter password"
+                id="password"
+                className="w-full p-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-gray-500 focus:outline-none"
+                onChange={handleChange}
+              />
+            </div>
+
+            {/* Submit Button */}
+            <button
+              disabled={loading}
+              className={`w-full bg-black text-white py-2 rounded-md font-medium hover:bg-gray-700 transition ${
+                loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
+              {loading ? "Loading..." : "Sign In"}
+            </button>
+          </form>
+
+          {/* OAuth Google Sign In */}
+          <div className="mt-4">
+            <OAuth />
+          </div>
+
+          {/* Footer */}
+          <p className="text-center text-sm mt-4">
+            Dont have an account?{' '}
+            <a href="/sign-up" className="text-gray-900 font-medium hover:underline">
+              Sign Up
+            </a>
+          </p>
+
+          {error && <p className="text-red-600 text-center mt-4">{error}</p>}
+        </div>
       </div>
-      {error && <p className="text-red-800 mt-5">{error}</p>}
     </div>
   );
 };
