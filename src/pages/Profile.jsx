@@ -19,16 +19,20 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white shadow-md rounded-lg p-6 max-w-md w-full">
-        <div className="flex flex-col items-center">
+    <div className="min-h-screen flex items-center justify-center bg-gray-200 py-10">
+      <div className="bg-white bg-opacity-60 backdrop-blur-sm shadow-lg rounded-lg p-6 max-w-md w-full">
+        <div className="flex flex-col items-center mb-6">
           <img
             src={currentUser.profilePicture || "https://via.placeholder.com/150"}
             alt="Profile"
-            className="w-24 h-24 rounded-full border-2 border-gray-300 object-cover"
+            className="w-24 h-24 rounded-full border-4 border-white object-cover mb-4"
           />
+          <h2 className="text-2xl font-semibold text-gray-800">{currentUser.username}</h2>
+          <p className="text-sm text-gray-600">{currentUser.email}</p>
         </div>
-        <form className="mt-4 space-y-4">
+
+        {/* Glassy form section */}
+        <form className="mt-4 space-y-4 bg-white bg-opacity-50 backdrop-blur-sm p-6 rounded-lg shadow-lg">
           <div>
             <label htmlFor="username" className="block text-sm font-medium text-gray-700">
               Username
@@ -37,7 +41,7 @@ const Profile = () => {
               type="text"
               id="username"
               value={currentUser.username}
-              className="w-full p-2 rounded-md border border-gray-300"
+              className="w-full p-3 rounded-md border border-gray-300 bg-transparent text-gray-700"
               disabled
             />
           </div>
@@ -49,14 +53,15 @@ const Profile = () => {
               type="email"
               id="email"
               value={currentUser.email}
-              className="w-full p-2 rounded-md border border-gray-300"
+              className="w-full p-3 rounded-md border border-gray-300 bg-transparent text-gray-700"
               disabled
             />
           </div>
         </form>
+
         <button
           onClick={handleSignOut}
-          className="mt-4 w-full bg-red-600 text-white py-2 rounded-md"
+          className="mt-6 w-full bg-black text-white py-3 rounded-md hover:bg-black transition"
         >
           Logout
         </button>
