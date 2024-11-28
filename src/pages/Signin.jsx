@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { signInFailure, signInStart, signInSuccess } from "../redux/user/userSlice";
-import OAuth from "../components/OAuth"; // Assuming OAuth component handles Google Auth
+import OAuth from "../components/OAuth";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -10,10 +10,9 @@ const SignIn = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Redirect if the user is already signed in
   useEffect(() => {
     if (currentUser) {
-      navigate("/", { replace: true }); // Prevent back navigation
+      navigate("/", { replace: true });
     }
   }, [currentUser, navigate]);
 
@@ -39,14 +38,10 @@ const SignIn = () => {
       }
 
       const data = await res.json();
-      console.log(data);
-
       dispatch(signInSuccess(data));
-
-      // Navigate to the home page after successful sign-in
       navigate("/");
     } catch (err) {
-      console.log(err.message);
+      console.error(err.message);
       dispatch(signInFailure(err.message || "Something went wrong!"));
     }
   };

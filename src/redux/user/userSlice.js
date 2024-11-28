@@ -12,10 +12,12 @@ const userSlice = createSlice({
       state.loading = true;
     },
     signInSuccess: (state, action) => {
-      state.currentUser = action.payload;
+      state.currentUser = action.payload.user || action.payload; // Ensure user data is correctly stored
       state.loading = false;
       state.error = null;
     },
+    
+    
     signInFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;

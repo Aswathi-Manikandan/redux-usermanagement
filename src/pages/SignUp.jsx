@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice'; // Adjust the path as needed
-import OAuth from "../components/OAuth"; // Assuming OAuth component handles Google Auth
+import { useNavigate } from 'react-router-dom';
+import { signInStart, signInFailure } from '../redux/user/userSlice'; // No signInSuccess here for signup
+import OAuth from "../components/OAuth"; // For Google authentication
 
 const SignUp = () => {
   const [formData, setFormData] = useState({});
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Initialize useNavigate
-  const { loading, error } = useSelector((state) => state.user); // Access user state
+  const navigate = useNavigate(); 
+  const { loading, error } = useSelector((state) => state.user);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -16,7 +16,7 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(signInStart()); // Dispatch start action
+    dispatch(signInStart());
 
     try {
       const res = await fetch('/api/auth/signup', {
@@ -24,7 +24,7 @@ const SignUp = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData), // Send form data as JSON
+        body: JSON.stringify(formData),
       });
 
       if (!res.ok) {
@@ -32,13 +32,11 @@ const SignUp = () => {
         throw new Error(errorData.message || 'Error occurred during sign up');
       }
 
-      const data = await res.json();
-      dispatch(signInSuccess(data)); // Dispatch success action with user data
-      console.log('Sign-up successful:', data);
-
-      navigate('/'); // Navigate to the home page after successful signup
+      // Signup success, now navigate to Sign In
+      dispatch(signInFailure(null)); // Clear error if any, reset state
+      navigate('/sign-in'); 
     } catch (err) {
-      dispatch(signInFailure(err.message)); // Dispatch failure action with error message
+      dispatch(signInFailure(err.message)); // Set error in case of failure
       console.error('Error:', err.message);
     }
   };
@@ -46,7 +44,6 @@ const SignUp = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-500 text-white">
       <div className="flex shadow-lg rounded-lg bg-white overflow-hidden w-full max-w-4xl">
-
         <div
           className="hidden md:flex flex-col justify-center items-center w-1/2 text-white p-6"
           style={{
