@@ -25,11 +25,13 @@ const Header = () => {
           {/* Profile or Sign-In */}
           {currentUser ? (
             <Link to="/profile" className="flex items-center">
+              
               <img
                 src={currentUser.profilePicture || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}
                 alt="Profile"
                 className="w-8 h-8 rounded-full border-2 border-white object-cover"
               />
+              
             </Link>
           ) : (
             <Link to="/sign-in" className="hover:text-gray-200 transition duration-200">
